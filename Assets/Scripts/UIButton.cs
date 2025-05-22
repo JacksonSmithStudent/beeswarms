@@ -9,6 +9,8 @@ public class MultiButtonTrigger : MonoBehaviour
     public GameObject cameraCycleUIPanel;
     public CameraCycleController cameraCycleController;
 
+    private bool playerInTrigger = false;
+
     void Start()
     {
         for (int i = 0; i < buttons.Length; i++)
@@ -23,7 +25,6 @@ public class MultiButtonTrigger : MonoBehaviour
         if (cameraCycleController != null)
             cameraCycleController.DisableAllCameras();
 
-        // Show only Button 0 at start
         for (int i = 0; i < buttons.Length; i++)
         {
             buttons[i].gameObject.SetActive(i == 0);
@@ -37,7 +38,7 @@ public class MultiButtonTrigger : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && currentButtonIndex >= 0)
+        if (playerInTrigger && Input.GetKeyDown(KeyCode.E) && currentButtonIndex >= 0)
         {
             TriggerAction(currentButtonIndex);
         }
@@ -73,7 +74,6 @@ public class MultiButtonTrigger : MonoBehaviour
                         cameraCycleController.DisableAllCameras();
                 }
 
-                // Switch to Button 1
                 buttons[0].gameObject.SetActive(false);
                 if (buttons.Length > 1)
                 {
@@ -81,18 +81,15 @@ public class MultiButtonTrigger : MonoBehaviour
                     SetActiveButton(1);
                 }
 
-                Debug.Log("Switched from Button 0 to Button 1");
                 break;
 
             case 1:
-                // Turn off Camera UI and disable all cameras
                 if (cameraCycleUIPanel != null)
                     cameraCycleUIPanel.SetActive(false);
 
                 if (cameraCycleController != null)
                     cameraCycleController.DisableAllCameras();
 
-                // Switch back to Button 0
                 buttons[1].gameObject.SetActive(false);
                 if (buttons.Length > 0)
                 {
@@ -100,8 +97,25 @@ public class MultiButtonTrigger : MonoBehaviour
                     SetActiveButton(0);
                 }
 
-                Debug.Log("Switched from Button 1 to Button 0 and disabled camera UI");
                 break;
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInTrigger = true;
+            // Optionally show UI prompt here
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInTrigger = false;
+            // Optionally hide UI prompt here
         }
     }
 }
