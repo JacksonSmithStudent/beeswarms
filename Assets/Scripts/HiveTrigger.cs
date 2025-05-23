@@ -21,6 +21,7 @@ public class HiveTrigger : MonoBehaviour
 
     void Update()
     {
+
         if (!playerInRange || playerInTrigger == null)
         {
             HideAllUI();
@@ -75,6 +76,7 @@ public class HiveTrigger : MonoBehaviour
         {
             HideAllUI();
         }
+
     }
 
     private void OnTriggerEnter(Collider other)
